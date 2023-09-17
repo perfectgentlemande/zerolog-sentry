@@ -199,6 +199,12 @@ type config struct {
 	tags             map[string]string
 }
 
+func WithTags(tags map[string]string) WriterOption {
+	return optionFunc(func(cfg *config) {
+		cfg.tags = tags
+	})
+}
+
 func WithFlushTimeout(flushTimeout time.Duration) WriterOption {
 	return optionFunc(func(cfg *config) {
 		cfg.flushTimeout = flushTimeout
