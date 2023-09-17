@@ -29,6 +29,7 @@ type Writer struct {
 	hub *sentry.Hub
 
 	levels       map[zerolog.Level]struct{}
+	tags         map[string]string
 	flushTimeout time.Duration
 }
 
@@ -47,6 +48,7 @@ func (w *Writer) Write(data []byte) (n int, err error) {
 
 	event, ok := w.parseLogEvent(data)
 	event.Level = levelsMapping[lvl]
+	event.Tags = w.tags
 
 	if ok {
 		w.hub.CaptureEvent(event)
@@ -68,6 +70,7 @@ func (w *Writer) WriteLevel(level zerolog.Level, p []byte) (n int, err error) {
 
 	event, ok := w.parseLogEvent(p)
 	event.Level = levelsMapping[level]
+	event.Tags = w.tags
 
 	if ok {
 		w.hub.CaptureEvent(event)
@@ -193,6 +196,13 @@ type config struct {
 	flushTimeout     time.Duration
 	beforeSend       sentry.EventProcessor
 	tracesSampleRate float64
+	tags             map[string]string
+}
+
+func WithFlushTimeout(flushTimeout time.Duration) WriterOption {
+	return optionFunc(func(cfg *config) {
+		cfg.flushTimeout = flushTimeout
+	})
 }
 
 // WithLevels configures zerolog levels that have to be sent to Sentry.
@@ -331,6 +341,7 @@ func New(dsn string, opts ...WriterOption) (*Writer, error) {
 		hub:          sentry.CurrentHub(),
 		levels:       levels,
 		flushTimeout: cfg.flushTimeout,
+		tags:         cfg.tags,
 	}, nil
 }
 
