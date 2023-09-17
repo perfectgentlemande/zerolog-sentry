@@ -1,11 +1,11 @@
-module github.com/archdx/zerolog-sentry
+module github.com/perfectgentlemande/zerolog-sentry
 
 go 1.20
 
 require (
 	github.com/buger/jsonparser v1.1.1
-	github.com/getsentry/sentry-go v0.21.0
-	github.com/rs/zerolog v1.29.1
+	github.com/getsentry/sentry-go v0.24.1
+	github.com/rs/zerolog v1.30.0
 	github.com/stretchr/testify v1.8.4
 )
 
